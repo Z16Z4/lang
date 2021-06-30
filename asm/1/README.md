@@ -180,3 +180,7 @@ the world "global" is used when you want the linker to be able to know the addre
 The object file generated will contain a link to every label declared "global"
 
 In this case, we have to declare "_start" as global since it is required for the code to be properly linked.
+
+
+
+[Syscall list](https://www.notion.so/e686cda6036743afbaa375c6558b3f43)

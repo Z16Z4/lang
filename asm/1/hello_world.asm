@@ -1,14 +1,14 @@
-global _start
-section .text:
-_start:
-	mov 	eax,	0x4
-	mov	ebx,	1
-	mov	ecx,	message
-	mov	edx,	message_length
-	int	0x80
-	mov	eax,	0x1
-	mov	ebx,	0
-	int	0x80
-section .data:
-	message:	db	"Hello world",	0xA
-	message_length	equ	$-message
+section .data
+	text db "Hello world", 10
+section .text
+	global _start
+_start
+	mov rax, 1
+	mov rdi, 1
+	mov rsi, text
+	mov rdx, 14
+	syscall
+
+	mov rax, 60
+	mov rdi, 0
+	syscall

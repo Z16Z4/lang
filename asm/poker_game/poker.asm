@@ -1,5 +1,3 @@
-; A macro with two parameters
-; Implements the write system call
    %macro write_string 2 
       mov   rax, 4
       mov   rbx, 1
@@ -7,8 +5,37 @@
       mov   rdx, %2
       int   80h
    %endmacro
+   %macro rand_num 1
+	push bp
+	mov bp, sp
+	push ax
+	push bx
+	push cx
+	push dx
+	xor si, si
+	mov ah, 00h
+	;int lah
+	xor ax, ax
+	mov ax, dx
+	xor dx, dx
+	xor dx, dx
+	xor cx, cx
+	mov cl, %1
+	div cx
+	add dl, '0'
+	mov si, dx
+	pop dx
+	pop cx
+	pop bx
+	pop ax
+	pop bp
+	ret 2
+   %endmacro
 section .bss
 	card resb 16 
+	digitS resb 100
+	digitSP resb 8
+	printSpace resb 8
 section	.text
    global _start            ;must be declared for using gcc
 	
@@ -17,6 +44,7 @@ _start:                     ;tell linker entry point
 	;subroutine to get random cards of a stack
    write_string ace_spades, len1               
    write_string one_spades, len2
+   rand_num 2
    call _get_card	;subroutine to get 2 random cards
    write_string select_card, len0
    write_string card, 16
@@ -29,6 +57,39 @@ _get_card:
 	mov rdx, 16
 	syscall
 	ret
+_printRAX:
+	mov rcx, digitS
+	mov rbx, 10
+	mov [rcx], rbx
+	inc rcx
+	mov [digitSP], rcx
+_printRAXLoop:
+	mov rdx, 0
+	mov rbx, 10
+	div rbx
+	push rax
+	add rdx, 48
+	mov rcx, [digitSP]
+	mov [rcx], dl
+	inc rcx
+	mov [digitSP], rcx
+	pop rax
+	cmp rax, 0
+	jne _printRAXLoop
+_printRAXLoop2:
+	mov rcx, [digitSP]
+	mov rax, 1
+	mov rdi, 1
+	mov rsi, rcx
+	mov rdx, 1
+	syscall
+	mov rcx, [digitSP]
+	dec rcx
+	mov [digitSP], rcx
+	cmp rcx, digitS
+	jge _printRAXLoop2
+	ret
+
 section	.data
 ;could use an array here
 poker_table db "--------Poker Table--------",0XA,0XD

@@ -5,3 +5,5 @@ ld -m elf_i386 -o hello_world hello_world.o
 
 nasm -f elf64 -o *.o *.asm
 ld *.o -o <name>
+nasm -felf64 rand.asm
+ld rand.o -dynamic-linker /lib64/ld-linux-x86-64.so.2 -lc -melf_x86_64

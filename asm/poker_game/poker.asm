@@ -5,32 +5,15 @@
       mov   rdx, %2
       int   80h
    %endmacro
-   %macro rand_num 1
+   %macro rand_num 2
    ;HOW DID BOOMERS GENERATE RAND NUMBERS
-	push bp
-	mov bp, sp
-	push ax
-	push bx
-	push cx
-	push dx
-	xor si, si
-	mov ah, 00h
-	;int lah
-	xor ax, ax
-	mov ax, dx
-	xor dx, dx
-	xor dx, dx
-	xor cx, cx
-	mov cl, %1
-	div cx
-	add dl, '0'
-	mov si, dx
-	pop dx
-	pop cx
-	pop bx
-	pop ax
-	pop bp
-	ret 2
+	xor     rdx, rdx             ;there's no division of EAX solely
+	mov     rcx, %1 - %2 + 1   ; 117 possible values
+	div     rcx                  ; EDX:EAX / ECX> EAX quotient, EDX remainder
+	mov     rax, rdx             ; -> EAX = [0,116]
+	add     rax, 162             ; -> EAX = [162,278]
+	and	rax, -2
+	int 80h
    %endmacro
 section .bss
 	card resb 16 
@@ -45,8 +28,11 @@ _start:                     ;tell linker entry point
 	;subroutine to get random cards of a stack
    write_string ace_spades, len1               
    write_string one_spades, len2
-   rand_num 2
+   rand_num 104, 52
+   call _printRAX
    call _get_card	;subroutine to get 2 random cards
+   rand_num 104, 23
+   call _printRAX
    write_string select_card, len0
    write_string card, 16
    mov rax,1                ;system call number (sys_exit)

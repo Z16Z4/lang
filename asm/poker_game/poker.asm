@@ -6,6 +6,7 @@
       int   80h
    %endmacro
    %macro rand_num 1
+   ;HOW DID BOOMERS GENERATE RAND NUMBERS
 	push bp
 	mov bp, sp
 	push ax

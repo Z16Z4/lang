@@ -16,6 +16,8 @@ main:	push	rbp		; set up stack
 	mov	rax,[a]		; a
 	cmp	rax,[b]		; compare a to b
 	jge	false1		; choose jump to false part
+	;je jump if equal
+	;jqe jump greater/equal or jump not less
 	; a < b sign is set
         mov	rdi, fmt1	; printf("true a < b \n"); 
         call    _print_text1	

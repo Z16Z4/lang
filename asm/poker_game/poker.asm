@@ -14,9 +14,10 @@ section	.text
 	
 _start:                     ;tell linker entry point
    call _print_poker_table
+	;subroutine to get random cards of a stack
    write_string ace_spades, len1               
    write_string one_spades, len2
-   call _get_card
+   call _get_card	;subroutine to get 2 random cards
    call _print_text
    call _print_card
    mov rax,1                ;system call number (sys_exit)
@@ -50,6 +51,7 @@ _print_poker_table:
 	syscall
 	ret
 section	.data
+;could use an array here
 poker_table db "--------Poker Table--------",0XA,0XD
 len4 equ $- poker_table
 select_card db "Your card is "

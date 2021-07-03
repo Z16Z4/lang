@@ -1,0 +1,41 @@
+the message previously was printed twice
+
+
+we only called the sprint function on msg2 once
+
+well it actuall did only print once
+
+we didnt properly terminate the string
+
+
+in assembly, variables are stored one after another in memory
+
+
+so the last byte of our msg1 variable is
+right next to the first byte of our msg2 variable
+
+
+we know the string length calculation is looking for zero byte
+
+so unless our msg2 variable starts with a zero byte
+
+it keeps counting 
+
+
+
+as if its the same string
+
+
+
+assembly practically thinks its the same string
+
+
+
+so we need to put a zero byte or 0h after our strings
+
+to let assembly know where to stop counting
+
+
+in programming 0h denotes a null byte and a null byte after a strong tells assembly where it ends in memory
+
+

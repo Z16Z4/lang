@@ -1,0 +1,71 @@
+Subroutines are functions
+
+They are reusable pieces of code
+
+
+That can be called by your program to perform various
+repeatable tasks
+
+
+Subrotines are declared using labels just like we've used before
+_start
+
+
+However, the jmp instruction isnt used, instead call is used.
+
+we have to run the function using call, the jmp function cant be used
+
+
+
+
+Subroutines are only used so that code can be reused
+
+
+if we want to be able to use the subrotine 
+from anywhere in the code
+
+we had jumped from and where we should jump back to
+
+This would litter the code with unwanted labels
+
+
+If we use CALL and RET , assembly handles this program for us using something called the stack
+
+
+The stack is a special type of memory,
+
+Its the same type of memory that we've used before however
+
+its special in how it is used by the program
+
+
+The stack is what is call 'Last in First Out' memory (LFIO)
+
+
+You can think of the stack like a stack of plates in the kitchen :p
+
+The last plate you put on the stack is also the first plate you will take off the stack next time you use a plate
+
+The stack in assembly is not storing plates through, its storing vaules
+
+
+You can store a lot of things on the stack such as variables, addresses or other programs. We need to use the stack when we call subroutines to temporarily store vaules that will be restored later.
+
+
+Any register that your function needs to use should have its current vaule put on the stack for safe keeping using the PUSH instruction
+
+Then after the function has finished its logic, these registers can have their original vaules restored using the POP instruction.
+
+
+This means that any vaule in the register will be the same before and after you called your function.
+
+
+If we take care of this in the subroutine we can call functions without worring about what changes theyre making to our registers.
+
+The calland ret instruction also use the stack, When you call a subroutine, the address you called it from in your program is pushed onto the stack. This address is then popped oof the stack by ret and the program jumps back to that place in your code.
+
+
+This is why you should always JMP to labels but you should call functions.
+
+
+

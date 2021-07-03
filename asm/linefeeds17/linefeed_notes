@@ -1,0 +1,80 @@
+linefeeds are essential to console programs
+
+like the hello world program
+
+
+they become even more important once programs are built with user input 
+
+
+
+but linefeeds can be a pain to maintain
+
+
+
+sometimes you will want to include them in your strings
+
+
+
+and sometimes you will want to remove them 
+
+
+if we continue to hard code them in variables by adding 0Ah after 
+
+our declared message text,
+
+it will become a problem
+
+
+if theres a place in the code that we dont want to print out 
+the linfeed afterwards
+
+
+that way we can just call this subroutine 
+
+when we need a linefeed 
+
+
+and call our current sprint subroutine when we dont 
+
+
+
+
+A call to sys_write requires we pass a pointer 
+
+to an address in memory of the string we want to print
+
+so we cant just pass a linefeed character (0Ah) to our print function 
+
+
+we also dont want to create another variable just to hold a linefeed character
+
+
+so we will instead use the stack 
+
+
+
+The way it works is by moving a linefeed character into RAX
+
+
+
+
+we then push rax onto the stack and get the address pointed to by the extended stack pointer. ESP is another register 
+
+
+
+when you push items onto the stack ESP is decremened to point to the address in memory pf the last item
+
+
+ESP directly points to the previous item on the stack essentially
+
+
+since ESP points to an address in memory of a character sys_write will be able to use it to print
+
+
+
+
+
+
+
+
+

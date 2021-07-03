@@ -1,62 +1,63 @@
-   %macro write_string 2 
-      mov   rax, 4
+	global main
+   %macro write_string 2 ; to print strings
+      mov   rax, 4		 ;sys write
       mov   rbx, 1
-      mov   rcx, %1
-      mov   rdx, %2
-      int   80h
+      mov   rcx, %1		 ; sys write first argument
+      mov   rdx, %2		 ; sys write second argument
+      int   80h			 ; system call
    %endmacro
-   %macro rand_num 2
-   ;HOW DID BOOMERS GENERATE RAND NUMBERS
-	xor     rdx, rdx             ;there's no division of EAX solely
-	mov     rcx, %1 - %2 + 1   ; 117 possible values
-	div     rcx                  ; EDX:EAX / ECX> EAX quotient, EDX remainder
-	mov     rax, rdx             ; -> EAX = [0,116]
-;	add     rax, 162             ; -> EAX = [162,278]
-	add rax, 2
-	and	rax, -2
-	int 80h
+   %macro rand_num 2	;to generate rand number
+	xor     rdx, rdx             ;No division
+	mov     rcx, %1 - %2 + 1     ;generate rand seed
+	div     rcx                  ; rdx:rax/ rcx> rax quotient, rdx remainder
+	mov     rax, rdx             ; -> etc rax = [0,116]
+;	add     rax, 162             ; -> etc rax = [162,278]
+	add rax, 2					 ; add 2 to rax
+	and	rax, -2					 ; and rax-2
+	int 80h						 ;syscall
    %endmacro
-   %macro get_card_num 1
-	rand_num 150,50
-	mov [%1], al
-	mov rax, %1
-	sub rax, rcx
+   %macro get_card_num 1	;to get last bits of rand num
+	rand_num 150,50			; use macro rand , with seeds
+	mov [%1], al			; move last bits into argument
+	mov rax, %1				; move arugment into rax register
+	sub rax, rcx			;subtract rax by rcx
 	int 80h
    %endmacro
 section .bss
-	card resb 16 
-	digitS resb 100
-	digitSP resb 8
-	printSpace resb 8
-	card1 resb 4
-	card2 resb 4
-	card3 resb 4
-	card4_river resb 4
-	card5_river resb 4
+	digitS resb 100			;digit space to print int 
+	digitSP resb 8			;position of digit
+	cardPos1 resb 4			;card position 1 on board
+	cardPos2 resb 4			;card position 2 on board
+	cardPos3 resb 4			;card position 3 on board
+	cardPos4_river resb 4	;river card position 4
+	cardPos5_river resb 4	;river card position 5
 section	.text
-   global _start            ;must be declared for using gcc
+   global _start            ;must be declared for using nasm x86
 true1:
-	write_string ace_spades, len1
-	jmp pos2
+	write_string ace_spades, len1		;jmp to print ace_spades
+	jmp pos2							;return to position 2
 true2:
-	write_string one_spades, len2
-	jmp pos3
+	write_string one_spades, len2		;jmp to print one_spades
+	jmp pos3							;return to position 3
 	
 _start:
-;poker table header
-	write_string poker_table, len4
-
-	get_card_num card1
-	mov rax, card1
-	call _sub_rand
-	cmp rax,[ace_spade]
-	je true1
-	call _printRAX
+	write_string poker_table, len4		;Poker table heading
+main:
+	jmp pos1
+pos1:
+	get_card_num cardPos1				;gen rand in cardPos1
+	mov rax, cardPos1					;move cardPos1 to rax
+	call _sub_rand						;remove uneeded vaules
+	cmp rax,[ace_spade]					;Is this == ace_spade (53)
+	je true1							;if it is jump to true1 to print
+	jmp out_of_range					;otherwise out of range (increment)
+	jmp pos1
+	;call _printRAX						;otherwise print vaule
 	mov rax, 1
 	int 0x80
 pos2:
-	get_card_num card2 ;generate rand num
-	mov rax, card2 ; mov card2 into rax
+	get_card_num cardPos2 ;generate rand num
+	mov rax, cardPos2 ; mov card2 into rax
 	call _sub_rand ; remove addition num
 
 	cmp rax,[ace_club] ;compare 52 deck
@@ -69,8 +70,8 @@ range1:
 	mov rax, 1
 	int 0x80
 pos3:
-	get_card_num card3
-	mov rax, card3
+	get_card_num cardPos3
+	mov rax, cardPos3
 	call _sub_rand
 	call _printRAX
 	jmp pos4
@@ -79,16 +80,16 @@ pos3:
 	
 	write_string river, lenriver
 pos4:
-	get_card_num card4_river
-	mov rax, card4_river
+	get_card_num cardPos4_river
+	mov rax, cardPos4_river
 	call _sub_rand
 	call _printRAX
 	jmp pos5
 	mov rax, 1
 	int 0x80
 pos5:
-	get_card_num card5_river
-	mov rax, card5_river
+	get_card_num cardPos5_river
+	mov rax, cardPos5_river
 	call _sub_rand
 	call _printRAX	
 	mov rax,1                ;system call number (sys_exit)
@@ -98,17 +99,10 @@ out_of_range:
 	sub rax, 1
 	cmp rax,[king_spade]
 	jg out_of_range
-	jmp range1
+	ret
 
 _sub_rand:
 	sub rax, 4202700
-	ret
-_get_card:
-	mov rax, 0
-	mov rdi, 0
-	mov rsi, card
-	mov rdx, 16
-	syscall
 	ret
 _printRAX:
 	mov rcx, digitS
@@ -154,7 +148,6 @@ one_spades db '1 of spades',0XA,0XD
 len2 equ $- one_spades
 two_spades db '2 of spades',0xA,0XD
 len3 equ $- two_spades
-delay dq 5, card1
 
 
 ;The river string 

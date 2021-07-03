@@ -60,8 +60,6 @@ _start:
 	call _printRAX
 	mov rax, 0
 	int 0x80
-	
-	write_string river, lenriver
 
 	get_card_num card4_river
 	mov rax, card4_river
@@ -132,5 +130,3 @@ len2 equ $- one_spades
 two_spades db '2 of spades',0xA,0XD
 len3 equ $- two_spades
 delay dq 5, card1
-river db ".. on the river ...",0XA,0XD
-lenriver equ $- river

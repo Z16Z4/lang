@@ -6,7 +6,7 @@
       int   80h
    %endmacro
    %macro rand_num 2
-   ;HOW DID BOOMERS GENERATE RAND NUMBERS
+   ;HOW DO YOU GENERATE RAND NUMBERS?
 	xor     rdx, rdx             ;there's no division of EAX solely
 	mov     rcx, %1 - %2 + 1   ; 117 possible values
 	div     rcx                  ; EDX:EAX / ECX> EAX quotient, EDX remainder
